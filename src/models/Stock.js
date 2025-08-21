@@ -14,7 +14,7 @@ export class Stock {
       const data = await response.json();
 
       if (data["Global Quote"] && data["Global Quote"]["05. price"]) {
-        return data["Global Quote"]["05. price"];
+        return parseFloat(data["Global Quote"]["05. price"]).toFixed(2);
       } else {
         throw new Error("Invalid ticker or no data found");
       }

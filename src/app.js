@@ -1,19 +1,13 @@
 import { Stock } from "./models/Stock.js";
 
 const container = document.getElementById("container"),
-  button = document.getElementById("button");
+  button = document.getElementById("button"),
+  API_KEY = "XC6KZS8SN2H4UKNN";
 
 // METHOD: Display stock
 function displayStock(stock, price) {
   // Clear previous content
   container.innerHTML = "";
-
-  // Return if input empty
-
-  if (stock.ticker === "") {
-    alert("Please enter a valid ticker");
-    return;
-  }
 
   // Create html elements
   const tickerEl = document.createElement("h2");
@@ -28,10 +22,21 @@ function displayStock(stock, price) {
 }
 
 // METHOD: Get stock price
-button.addEventListener("click", () => {
+button.addEventListener("click", async () => {
   const input = document.getElementById("input").value.trim(),
     stock = new Stock(input),
-    price = stock.getPrice();
+    price = await stock.getPrice(input);
 
-  displayStock(stock, price);
+  // If input is empty
+  if (input === "") {
+    alert("Please enter a ticker.");
+    return;
+  }
+
+  // If valid ticker
+  if (price) {
+    displayStock(stock, price);
+  } else {
+    alert("Could not fetch price. Please check ticker symbol.");
+  }
 });

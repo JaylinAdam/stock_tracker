@@ -9,14 +9,27 @@
   <body>
     <h1>Stock Tracker</h1>
 
-    <input
-      type="text"
-      id="input"
-      placeholder="Enter stock ticker (e.g., AAPL)"
-    />
-    <button id="button">Check Price</button>
+    <section class="stock__form">
+      <form>
+        <input
+          type="text"
+          id="stock-input"
+          class="stock__input"
+          placeholder="Enter stock ticker"
+          autocomplete="off"
+        />
 
-    <div id="container"></div>
+        <button id="price-button">Check Price</button>
+        <button id="save-button">Save Entry</button>
+        <button id="load-button">Load Entries</button>
+        <button id="clear">Clear</button>
+      </form>
+    </section>
+
+    <section class="stock__display">
+      <div id="stock-container"></div>
+      <div id="entries-container"></div>
+    </section>
 
     <script type="module" src="app.js"></script>
   </body>

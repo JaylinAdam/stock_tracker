@@ -3,34 +3,70 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--==================== CSS ====================-->
+    <link rel="stylesheet" href="../assets/styles/main.css" />
+
     <title>Stock Tracker</title>
   </head>
 
   <body>
-    <h1>Stock Tracker</h1>
+    <header>
+      <h1 class="title">Stock Tracker</h1>
+    </header>
 
-    <section class="stock__form">
-      <form>
-        <input
-          type="text"
-          id="stock-input"
-          class="stock__input"
-          placeholder="Enter stock ticker"
-          autocomplete="off"
-        />
-
-        <button id="price-button">Check Price</button>
-        <button id="save-button">Save Entry</button>
-        <button id="load-button">Load Entries</button>
-        <button id="clear">Clear</button>
-      </form>
+    <!-- SEARCH BAR SECTION -->
+    <section class="search__section">
+      <!-- SEARCH FORM -->
+      <div class="search__form container">
+        <form>
+          <!-- SEARCH INPUT -->
+          <input
+            type="text"
+            id="search-input"
+            class="search__input"
+            placeholder="Enter ticker (e.g., AAPL)"
+            autocomplete="off"
+          />
+          <!-- JS BUTTONS -->
+          <button id="price-button" class="button">Check Price</button>
+          <button id="save-button" class="button">Save Entry</button>
+          <button id="load-button" class="button">Load Entries</button>
+          <button id="clear-entries" class="button">Clear Entries</button>
+          <button id="clear-screen" class="button">Clear Screen</button>
+        </form>
+      </div>
     </section>
 
-    <section class="stock__display">
-      <div id="stock-container"></div>
-      <div id="entries-container"></div>
+    <!-- ALERT MESSAGE -->
+    <div class="alert__container container">
+      <div id="alert-list" class="alert__message"></div>
+    </div>
+
+    <!-- STOCK QUOTE SECTION -->
+    <section class="quote__section">
+      <!--QUOTE DISPLAY -->
+      <div class="quote__display">
+        <!-- QUOTE OUTPUT -->
+        <div class="quote__output container">
+          <div id="quote-output-list" class="stock__data"></div>
+          <!-- JS BUTTON -->
+          <button id="quote-reminder-button" class="quote__reminder button">
+            Set Reminder Price
+          </button>
+        </div>
+      </section>
+
+      <!-- SAVED ENTRIES SECTION -->
+      <section class="saved__section">
+        <div id="saved-container" class="saved__container container">
+          <h1 class="subtitle">Saved Entries</h1>
+          <div id="saved-list" class="stock__data"></div>
+        </div>
+      </div>
     </section>
 
+    <!-- APP JS -->
     <script type="module" src="app.js"></script>
   </body>
 </html>

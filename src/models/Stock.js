@@ -1,4 +1,5 @@
-const API_KEY = "XC6KZS8SN2H4UKNN";
+const API_KEY_2 = "XC6KZS8SN2H4UKNN";
+const API_KEY = "2U3E0049FATW3HOV";
 
 export class Stock {
   constructor(ticker = "NONE") {

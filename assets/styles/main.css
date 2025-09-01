@@ -1,0 +1,65 @@
+/* DEFAULTS */
+header {
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  height: 5rem;
+}
+.title {
+  font-size: 2rem;
+}
+.subtitle {
+  font-size: 1.5rem;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+}
+.container {
+  display: block;
+  padding: 0 1rem;
+}
+.grid {
+  display: grid;
+}
+
+/* SEARCH FORM */
+
+/* ALERTS */
+.alert__container {
+  display: flex;
+  height: 2rem;
+}
+.alert__message {
+  font-size: 0.8rem;
+}
+
+/* QUOTE DISPLAY */
+.quote__reminder {
+  display: none;
+  height: 100%;
+}
+
+/* SAVED ENTRIES */
+.saved__container {
+  display: none;
+}
+
+/* STOCK */
+.stock__data {
+  font-size: 1.25rem;
+  padding-left: 0.5rem;
+}
+
+/* BUTTONS */
+/* .button {
+} */
+
+/* ACTIVE */
+.active {
+  display: block;
+}

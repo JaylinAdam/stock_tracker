@@ -241,6 +241,12 @@ export class AutocompleteSearch {
         selectedElement.classList.add("selected");
         selectedElement.setAttribute("aria-selected", "true");
         this.input.setAttribute("aria-activedescendant", selectedElement.id);
+
+        // Scroll the selected element into view
+        selectedElement.scrollIntoView({
+          block: "nearest",
+          behavior: "smooth",
+        });
       }
     } else {
       this.input.setAttribute("aria-activedescendant", "");

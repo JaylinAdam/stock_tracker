@@ -122,6 +122,7 @@ export class AutocompleteSearch {
   _displaySuggestions(suggestions) {
     this.suggestionsContainer.innerHTML = "";
     this.selectedIndex = -1;
+    this.input.setAttribute("aria-activedescendant", "");
 
     if (suggestions.length === 0) {
       this._hideSuggestions();
@@ -149,6 +150,7 @@ export class AutocompleteSearch {
     element.setAttribute("role", "option");
     element.setAttribute("aria-selected", "false");
     element.setAttribute("data-index", index);
+    element.id = `suggestion-${index}`;
     element.tabIndex = -1;
 
     element.innerHTML = `
@@ -238,8 +240,10 @@ export class AutocompleteSearch {
       if (selectedElement) {
         selectedElement.classList.add("selected");
         selectedElement.setAttribute("aria-selected", "true");
-        selectedElement.focus();
+        this.input.setAttribute("aria-activedescendant", selectedElement.id);
       }
+    } else {
+      this.input.setAttribute("aria-activedescendant", "");
     }
   }
 

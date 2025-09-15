@@ -4,7 +4,7 @@ A modern, accessible stock search application with real-time autocomplete functi
 
 ## Features
 
-### 🔍 **Autocomplete Search**
+**Autocomplete Search**
 
 - **Real-time suggestions** as you type (minimum 2 characters)
 - **Keyboard navigation** with Arrow Up/Down, Enter to select, Esc to close
@@ -12,7 +12,7 @@ A modern, accessible stock search application with real-time autocomplete functi
 - **Debounced API calls** (350ms) to respect rate limits
 - **Intelligent caching** to reduce API calls and improve performance
 
-### 📊 **Quote Display**
+**Quote Display**
 
 - **Live stock quotes** with current price, change, and change percentage
 - **Detailed information** including open, high, low, previous close, volume, and trading day
@@ -20,14 +20,14 @@ A modern, accessible stock search application with real-time autocomplete functi
 - **Error handling** with user-friendly messages
 - **Color-coded changes** (green for positive, red for negative)
 
-### ♿ **Accessibility**
+### **Accessibility**
 
 - **ARIA attributes** for screen reader compatibility
 - **Keyboard navigation** support
 - **Semantic HTML** structure
 - **Focus management** and proper tab order
 
-### 🚀 **Performance**
+**Performance**
 
 - **Rate limit protection** with debouncing and caching
 - **Modular architecture** for maintainability
@@ -36,18 +36,18 @@ A modern, accessible stock search application with real-time autocomplete functi
 
 ## Architecture
 
-### Services
+Services
 
 - **`SearchService.js`** - Handles Alpha Vantage SYMBOL_SEARCH API calls
 - **`QuoteService.js`** - Manages Alpha Vantage GLOBAL_QUOTE API calls
 
-### Components
+Components
 
 - **`AutocompleteSearch.js`** - Autocomplete functionality with keyboard/mouse support
 - **`QuoteDisplay.js`** - Quote rendering with loading and error states
 - **`AlertSystem.js`** - Enhanced alert system for user feedback
 
-### Main App
+Main App
 
 - **`app.js`** - Main application orchestrating all components
 - **`index.html`** - Semantic HTML structure with ARIA attributes
@@ -55,20 +55,20 @@ A modern, accessible stock search application with real-time autocomplete functi
 
 ## Usage
 
-### Basic Search
+Basic Search
 
 1. **Type** a company name or symbol (e.g., "Apple", "AAPL", "Boeing")
 2. **Select** from the dropdown suggestions using mouse or keyboard
 3. **View** the live quote data with detailed information
 
-### Keyboard Navigation
+Keyboard Navigation
 
 - **Arrow Up/Down** - Navigate through suggestions
 - **Enter** - Select highlighted suggestion
 - **Escape** - Close suggestions dropdown
 - **Tab** - Move focus away from search
 
-### API Rate Limiting
+API Rate Limiting
 
 - **Debouncing** - 350ms delay between keystrokes
 - **Caching** - Search results cached per query
@@ -77,7 +77,7 @@ A modern, accessible stock search application with real-time autocomplete functi
 
 ## Implementation Details
 
-### Debouncing & Caching
+Debouncing & Caching
 
 ```javascript
 // SearchService implements 350ms debounce
@@ -87,7 +87,7 @@ this.debounceDelay = 350;
 this.cache.set(query.toLowerCase(), results);
 ```
 
-### Keyboard Navigation
+Keyboard Navigation
 
 ```javascript
 // Arrow key navigation with proper ARIA updates
@@ -101,7 +101,7 @@ _handleKeydown(e) {
 }
 ```
 
-### Accessibility Features
+Accessibility Features
 
 ```html
 <!-- Proper ARIA attributes for screen readers -->
@@ -109,14 +109,7 @@ _handleKeydown(e) {
 <div role="listbox" aria-label="Stock suggestions"></div>
 ```
 
-## Browser Support
-
-- **Chrome** 60+
-- **Firefox** 55+
-- **Safari** 12+
-- **Edge** 79+
-
-## API Configuration
+API Configuration
 
 The app uses Alpha Vantage APIs with the following configuration:
 
@@ -127,28 +120,7 @@ The app uses Alpha Vantage APIs with the following configuration:
 
 ## Development
 
-### File Structure
-
-```
-src/
-├── services/
-│   ├── SearchService.js      # Symbol search API
-│   └── QuoteService.js       # Quote data API
-├── components/
-│   ├── AutocompleteSearch.js # Search UI component
-│   ├── QuoteDisplay.js       # Quote display component
-│   └── AlertSystem.js        # Alert/notification system
-├── models/
-│   └── Stock.js              # Legacy stock model
-├── app.js                    # Main application
-└── index.html               # HTML structure
-
-assets/
-└── styles/
-    └── main.css             # Application styles
-```
-
-### Debugging
+Debugging
 
 Open browser console for helpful commands:
 
@@ -160,7 +132,7 @@ stockTrackerApp.clearAll();
 stockTrackerApp.getStats();
 ```
 
-## Future Enhancements
+Future Enhancements
 
 - **Portfolio tracking** - Save and manage multiple stocks
 - **Price alerts** - Set custom price notifications
@@ -168,6 +140,6 @@ stockTrackerApp.getStats();
 - **Watchlists** - Organize stocks by categories
 - **Real-time updates** - WebSocket integration for live data
 
-## License
+License
 
 MIT License - Feel free to use and modify for your projects.

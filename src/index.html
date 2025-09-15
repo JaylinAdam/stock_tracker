@@ -19,21 +19,26 @@
     <section class="search__section">
       <!-- SEARCH FORM -->
       <div class="search__form container">
-        <form>
+        <form role="search" aria-label="Stock search">
           <!-- SEARCH INPUT -->
           <input
             type="text"
             id="search-input"
             class="search__input"
-            placeholder="Enter ticker (e.g., AAPL)"
+            placeholder="Search for stocks (e.g., AAPL, MSFT, GOOG)"
             autocomplete="off"
+            aria-label="Search for stocks"
+            aria-expanded="false"
+            aria-autocomplete="list"
+            aria-activedescendant=""
+            role="combobox"
           />
-          <!-- JS BUTTONS -->
-          <button id="price-button" class="button">Check Price</button>
-          <button id="save-button" class="button">Save Entry</button>
-          <button id="load-button" class="button">Load Entries</button>
-          <button id="clear-entries" class="button">Clear Entries</button>
-          <button id="clear-screen" class="button">Clear Screen</button>
+          <div 
+            id="suggestions" 
+            class="suggestions" 
+            role="listbox"
+            aria-label="Stock suggestions"
+          ></div>
         </form>
       </div>
     </section>
@@ -50,10 +55,7 @@
         <!-- QUOTE OUTPUT -->
         <div class="quote__output container">
           <div id="quote-output-list" class="stock__data"></div>
-          <!-- JS BUTTON -->
-          <button id="quote-reminder-button" class="quote__reminder button">
-            Set Reminder Price
-          </button>
+
         </div>
       </section>
 

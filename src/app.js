@@ -1,158 +1,202 @@
-import { Stock } from "./models/Stock.js";
+/**
+ * Stock Tracker App - Main Application
+ * Integrates autocomplete search with quote display functionality
+ */
 
-// CONSTANTS
-const input = document.getElementById("search-input");
-const priceBtn = document.getElementById("price-button");
-const saveBtn = document.getElementById("save-button");
-const loadBtn = document.getElementById("load-button");
-const reminderBtn = document.getElementById("quote-reminder-button");
-const outputList = document.getElementById("quote-output-list");
-const savedList = document.getElementById("quote-saved-list");
-const savedContainer = document.getElementById("saved-container");
-const alertList = document.getElementById("alert-list");
-const loadEntries = () => JSON.parse(localStorage.getItem("entries") || "{}");
-const saveEntries = (data) =>
-  localStorage.setItem("entries", JSON.stringify(data));
+import { AutocompleteSearch } from "./components/AutocompleteSearch.js";
+import { QuoteDisplay } from "./components/QuoteDisplay.js";
+import { AlertSystem } from "./components/AlertSystem.js";
+import { QuoteService } from "./services/QuoteService.js";
 
-// FUNCTION: Add entry to storage
-function addEntry(ticker, price) {
-  const entries = loadEntries();
-
-  // Create array if none
-  if (!entries[ticker]) {
-    entries[ticker] = [];
-  }
-  // Push entry into array
-  entries[ticker] = { price, ts: Date.now() };
-
-  // Save to local storage
-  saveEntries(entries);
-  console.log(entries);
-}
-
-// FUNCTION: Remove entry from storage
-function removeEntry(ticker) {
-  const entries = loadEntries();
-
-  // Create new array without target entry
-  const newEntries = entries.filter((e) => e.ticker !== ticker);
-
-  // Save to local storage
-  saveEntries(entries);
-  console.log(entries);
-}
-
-// FUNCTION: Display stock output to document
-function displayStock(stock, container) {
-  // Create element
-  const stockEl = document.createElement("div");
-
-  // Store display output
-  stockEl.innerHTML = stock.display();
-
-  // `Appe`nd element to container
-  container.appendChild(stockEl);
-}
-
-function displayAlert(message) {
-  alertList.innerHTML = `<p>${message}<p>`;
-}
-
-function clearContent() {
-  // Clear previous content
-  const list = [outputList, savedList, alertList];
-  const actives = [savedContainer, reminderBtn];
-  list.forEach((item) => {
-    item.innerHTML = "";
-  });
-  actives.forEach((item) => {
-    item.classList.remove("active");
-  });
-}
-
-// Prevent multiple concurrent fetches
-let loading = false;
-// CLICK EVENT: Check stock entry on click
-priceBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
-
-  // If input is empty
-  const ticker = input.value.trim();
-  if (ticker === "") {
-    displayAlert("Please enter a ticker.");
-    return;
+class StockTrackerApp {
+  constructor() {
+    this.initializeElements();
+    this.initializeServices();
+    this.initializeComponents();
+    this.bindEvents();
   }
 
-  if (loading) return;
-  loading = true;
-  priceBtn.disabled = true;
-  try {
-    // Declare stock object and retrieve data from API
-    const stock = await Stock.fromTicker(ticker);
+  /**
+   * Initialize DOM elements
+   */
+  initializeElements() {
+    this.searchInput = document.getElementById("search-input");
+    this.suggestionsContainer = document.getElementById("suggestions");
+    this.quoteContainer = document.getElementById("quote-output-list");
+    this.alertContainer = document.getElementById("alert-list");
+    this.reminderButton = document.getElementById("quote-reminder-button");
+  }
 
-    // If price exists
-    if (stock.price) {
-      clearContent();
-      displayStock(stock, outputList);
+  /**
+   * Initialize services
+   */
+  initializeServices() {
+    this.quoteService = new QuoteService();
+  }
 
-      // Display reminder button
-      reminderBtn.classList.add("active");
+  /**
+   * Initialize components
+   */
+  initializeComponents() {
+    // Initialize alert system
+    this.alertSystem = new AlertSystem(this.alertContainer);
 
-      // Store dataset to be saved
-      saveBtn.dataset.ticker = stock.ticker;
-      saveBtn.dataset.price = stock.price;
-    } else {
-      displayAlert("Could not fetch price. Please check ticker symbol");
+    // Initialize quote display
+    this.quoteDisplay = new QuoteDisplay(this.quoteContainer);
+
+    // Initialize autocomplete search
+    this.autocompleteSearch = new AutocompleteSearch(
+      this.searchInput,
+      this.suggestionsContainer,
+      (suggestion) => this.handleSymbolSelection(suggestion)
+    );
+  }
+
+  /**
+   * Bind event listeners
+   */
+  bindEvents() {
+    // Handle form submission
+    const form = this.searchInput.closest("form");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      this.handleFormSubmit();
+    });
+
+    // Handle reminder button (if it exists)
+    if (this.reminderButton) {
+      this.reminderButton.addEventListener("click", () => {
+        this.handleReminderClick();
+      });
     }
-  } catch {
-    throw new Error("Failed to fetch price during loading. Please try again.");
-  } finally {
-    loading = false;
-    priceBtn.disabled = false;
-    input.value = "";
-  }
-});
-
-//CLICK EVENT: Save stock entry on click
-saveBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  // If input is empty
-  if (!e.target.dataset.ticker) {
-    displayAlert("There is no entry to be saved. Please enter a ticker.");
-    return;
   }
 
-  const { ticker, price } = e.target.dataset;
-  addEntry(ticker, price);
-  displayAlert("Entry saved!");
-});
+  /**
+   * Handle symbol selection from autocomplete
+   * @param {Object} suggestion - Selected suggestion object
+   */
+  async handleSymbolSelection(suggestion) {
+    if (!suggestion || !suggestion.symbol) {
+      this.alertSystem.warning("Please select a valid stock symbol");
+      return;
+    }
 
-// CLICK EVENT: Display saved stock entries on click
-loadBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  // Map entry object values
-  const entries = loadEntries();
-  const mapped = Object.entries(entries).map(([ticker, { price }]) =>
-    Stock.fromSaved(ticker, price)
-  );
-  if (mapped.length === 0) {
-    displayAlert("No saved entries.");
-  } else {
-    clearContent();
-    savedContainer.classList.add("active");
-    mapped.forEach((entry) => displayStock(entry, savedList));
+    await this.fetchAndDisplayQuote(suggestion.symbol);
   }
 
-  console.log(entries);
-});
+  /**
+   * Handle form submission
+   */
+  async handleFormSubmit() {
+    const query = this.autocompleteSearch.getValue();
 
-const clearEntries = document.getElementById("clear-entries");
-clearEntries.addEventListener("click", (e) => {
-  localStorage.removeItem("entries");
-});
-const clearScreen = document.getElementById("clear-screen");
-clearScreen.addEventListener("click", (e) => {
-  clearContent();
+    if (!query) {
+      this.alertSystem.warning("Please enter a stock symbol or company name");
+      return;
+    }
+
+    // Hide suggestions immediately on form submission
+    this.autocompleteSearch.hideSuggestions();
+
+    // If it looks like a symbol (short, uppercase), try to fetch directly
+    if (Tools.isLikelySymbol(query)) {
+      await this.fetchAndDisplayQuote(query.toUpperCase());
+    } else {
+      this.alertSystem.info(
+        "Please select a stock from the suggestions or enter a valid symbol"
+      );
+    }
+  }
+
+  /**
+   * Fetch and display quote for a symbol
+   * @param {string} symbol - Stock symbol
+   */
+  async fetchAndDisplayQuote(symbol) {
+    try {
+      // Show loading state
+      this.quoteDisplay.showLoading();
+      this.alertSystem.clear();
+
+      // Fetch quote data
+      const quote = await this.quoteService.getQuote(symbol);
+
+      if (!quote) {
+        this.quoteDisplay.showError(
+          "Unable to fetch quote data. Please check ticker symbol and try again."
+        );
+        this.alertSystem.error("Failed to fetch quote data");
+        return;
+      }
+
+      // Display the quote
+      this.quoteDisplay.displayQuote(quote);
+      this.alertSystem.success(`Quote loaded for ${symbol}`);
+
+      // Show reminder button if it exists
+      if (this.reminderButton) {
+        this.reminderButton.classList.add("active");
+      }
+    } catch (error) {
+      console.error("Error fetching quote:", error);
+      this.quoteDisplay.showError(
+        "An error occurred while fetching the quote. Please try again."
+      );
+      this.alertSystem.error("An error occurred while fetching the quote");
+    }
+  }
+
+  /**
+   * Handle reminder button click
+   */
+  handleReminderClick() {
+    const currentQuote = this.quoteDisplay.getCurrentQuote();
+    if (currentQuote) {
+      this.alertSystem.info(
+        `Reminder feature not yet implemented for ${currentQuote.symbol}`
+      );
+    } else {
+      this.alertSystem.warning("No quote data available for reminder");
+    }
+  }
+
+  /**
+   * Clear all content
+   */
+  clearAll() {
+    this.quoteDisplay.clear();
+    this.alertSystem.clear();
+    this.autocompleteSearch.clear();
+
+    if (this.reminderButton) {
+      this.reminderButton.classList.remove("active");
+    }
+  }
+
+  /**
+   * Get app statistics
+   */
+  getStats() {
+    return {
+      searchCache: this.autocompleteSearch.searchService.getCacheStats(),
+      quoteCache: this.quoteService.getCacheStats(),
+      hasQuote: this.quoteDisplay.hasQuote(),
+      hasAlert: this.alertSystem.hasAlert(),
+    };
+  }
+}
+
+/**
+ * Initialize the app when DOM is loaded
+ */
+document.addEventListener("DOMContentLoaded", () => {
+  window.stockTrackerApp = new StockTrackerApp();
+
+  /**
+   * Add some helpful console commands for debugging
+   */
+  console.log("Stock Tracker App initialized");
+  console.log("Available commands:");
+  console.log("- stockTrackerApp.clearAll() - Clear all content");
+  console.log("- stockTrackerApp.getStats() - Get app statistics");
 });

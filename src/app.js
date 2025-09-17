@@ -99,11 +99,11 @@ class StockTrackerApp {
     this.autocompleteSearch.hideSuggestions();
 
     // If it looks like a symbol (short, uppercase), try to fetch directly
-    if (Tools.isLikelySymbol(query)) {
+    if (this.isLikelySymbol(query)) {
       await this.fetchAndDisplayQuote(query.toUpperCase());
     } else {
-      this.alertSystem.info(
-        "Please select a stock from the suggestions or enter a valid symbol"
+      this.alertSystem.warning(
+        "Invalid symbol format. Please enter a valid symbol or select from suggestions."
       );
     }
   }
@@ -139,10 +139,23 @@ class StockTrackerApp {
       }
     } catch (error) {
       console.error("Error fetching quote:", error);
-      this.quoteDisplay.showError(
-        "An error occurred while fetching the quote. Please try again."
-      );
-      this.alertSystem.error("An error occurred while fetching the quote");
+      console.log("Error type:", error.type);
+      console.log("Error message:", error.message);
+
+      // Handle rate limit specifically
+      if (error.type === "RATE_LIMIT") {
+        this.quoteDisplay.showError(
+          "API rate limit exceeded. Please wait a moment before trying again."
+        );
+        this.alertSystem.warning(
+          "Rate limit hit - please wait before trying again"
+        );
+      } else {
+        this.quoteDisplay.showError(
+          "An error occurred while fetching the quote. Please try again."
+        );
+        this.alertSystem.error("An error occurred while fetching the quote");
+      }
     }
   }
 
@@ -183,6 +196,16 @@ class StockTrackerApp {
       hasQuote: this.quoteDisplay.hasQuote(),
       hasAlert: this.alertSystem.hasAlert(),
     };
+  }
+
+  /**
+   * Check if a query looks like a stock symbol
+   * @param {string} query - The query to check
+   * @returns {boolean} - True if it looks like a symbol
+   */
+  isLikelySymbol(query) {
+    // Stock symbols are typically 1-5 characters, alphanumeric, uppercase
+    return /^[A-Z]{1,5}$/.test(query.trim().toUpperCase());
   }
 }
 

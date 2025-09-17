@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.stockTrackerApp = new StockTrackerApp();
 
   /**
-   * Add some helpful console commands for debugging
+   * Helpful console commands for debugging
    */
   console.log("Stock Tracker App initialized");
   console.log("Available commands:");

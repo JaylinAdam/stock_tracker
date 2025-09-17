@@ -3,7 +3,7 @@
  * Provides quote fetching with error handling and rate limiting
  */
 
-const API_KEYS = ["2U3E0049FATW3HOV", "XC6KZS8SN2H4UKNN"];
+const API_KEYS = ["6N4AFLFA3ODCGHO2"];
 
 const BASE_URL = "https://www.alphavantage.co/query";
 

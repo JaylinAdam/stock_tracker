@@ -134,6 +134,7 @@ stockTrackerApp.getStats();
 
 Future Enhancements
 
+- **Enhanced caching** - Implement longer cache durations and smarter cache invalidation to reduce API calls and respect daily rate limits
 - **Portfolio tracking** - Save and manage multiple stocks
 - **Price alerts** - Set custom price notifications
 - **Historical data** - View price charts and trends
